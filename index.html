@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Zairyu Desk</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ THANH THƯƠNG HIỆU + CHỌN NGÔN NGỮ ============ -->
+  <div class="brandbar">
+    <div class="brand">
+      <span class="brand-mark">在</span>
+      <span class="brand-text">
+        <strong>Zairyu Desk</strong>
+        <em data-i18n="app.tagline"></em>
+      </span>
+    </div>
+    <div id="lang-switch" class="lang-switch">
+      <button type="button" data-lang="ja">日本語</button>
+      <button type="button" data-lang="vi">Tiếng Việt</button>
+      <button type="button" data-lang="en">English</button>
+    </div>
+  </div>
+
+  <!-- ============ MÀN HÌNH: ĐANG TẢI ============ -->
+  <section id="screen-loading" class="screen">
+    <p class="muted" data-i18n="loading"></p>
+  </section>
+
+  <!-- ============ MÀN HÌNH: LINK KHÔNG HỢP LỆ ============ -->
+  <section id="screen-invalid" class="screen hidden">
+    <div class="card card-error">
+      <h1 data-i18n="invalid.title"></h1>
+      <p data-i18n="invalid.body"></p>
+    </div>
+  </section>
+
+  <!-- ============ MÀN HÌNH: ĐÃ HẾT HẠN ============ -->
+  <section id="screen-expired" class="screen hidden">
+    <div class="card card-error">
+      <h1 data-i18n="expired.title"></h1>
+      <p id="expired-body"></p>
+      <p data-i18n="expired.body2"></p>
+    </div>
+  </section>
+
+  <!-- ============ MÀN HÌNH: FORM CHÍNH ============ -->
+  <section id="screen-form" class="screen hidden">
+
+    <div class="who">
+      <div><strong id="info-hoten"></strong> — <span id="info-congty"></span> (<span id="info-nhomg"></span>)</div>
+      <div class="muted small">
+        <span data-i18n="info.round"></span>: <span id="info-dot"></span> ·
+        <span data-i18n="info.deadline"></span>: <span id="info-han"></span>
+      </div>
+    </div>
+
+    <form id="main-form">
+
+      <!-- ---- 1. Tình trạng hôn nhân ---- -->
+      <div class="card">
+        <h2 data-i18n="q1.title"></h2>
+        <p class="muted" data-i18n="q1.sub"></p>
+        <div class="radio-group" id="group-hon-nhan">
+          <label><input type="radio" name="hon-nhan" value="co" /> <span data-i18n="q1.yes"></span></label>
+          <label><input type="radio" name="hon-nhan" value="khong" /> <span data-i18n="q1.no"></span></label>
+        </div>
+      </div>
+
+      <!-- ---- 2. Người thân đang sống tại Nhật (在日親族) ---- -->
+      <div class="card">
+        <h2 data-i18n="q2.title"></h2>
+        <p class="muted" data-i18n="q2.sub"></p>
+        <div class="radio-group" id="group-nguoi-than-nhat">
+          <label><input type="radio" name="nguoi-than-nhat" value="co" /> <span data-i18n="yes"></span></label>
+          <label><input type="radio" name="nguoi-than-nhat" value="khong" /> <span data-i18n="no"></span></label>
+        </div>
+
+        <div id="relatives-block" class="hidden">
+          <div id="family-list"></div>
+          <button type="button" id="btn-add-family" class="btn btn-secondary" data-i18n="q2.add"></button>
+        </div>
+      </div>
+
+      <!-- ---- 3. Liên hệ quê nhà (chỉ hiện với diện Tokutei Gino) ---- -->
+      <div class="card hidden" id="card-tokutei">
+        <h2 data-i18n="q3.title"></h2>
+        <p class="muted" data-i18n="q3.sub"></p>
+        <div class="field">
+          <label data-i18n="q3.phone"></label>
+          <input type="tel" id="que-nha-sdt" />
+        </div>
+        <div class="field" style="margin-top:8px;">
+          <label data-i18n="q3.address"></label>
+          <input type="text" id="que-nha-diachi" />
+        </div>
+      </div>
+
+      <!-- ---- 4. Ảnh chân dung ---- -->
+      <div class="card">
+        <h2 data-i18n="q4.title"></h2>
+
+        <ul class="checklist">
+          <li data-i18n="q4.c1"></li>
+          <li data-i18n="q4.c2"></li>
+          <li data-i18n="q4.c3"></li>
+          <li data-i18n="q4.c4"></li>
+          <li data-i18n="q4.c5"></li>
+        </ul>
+
+        <div id="photo-picker">
+          <label class="btn btn-primary" for="photo-input" data-i18n="q4.choose"></label>
+          <input type="file" id="photo-input" accept="image/*" capture="user" hidden />
+        </div>
+
+        <div id="photo-result" class="hidden">
+          <img id="photo-preview" alt="" />
+          <div id="photo-status" class="status"></div>
+          <button type="button" id="btn-retake" class="btn btn-secondary" data-i18n="q4.retake"></button>
+        </div>
+      </div>
+
+      <div id="submit-error" class="error-box hidden"></div>
+
+      <button type="submit" id="btn-submit" class="btn btn-primary btn-submit" data-i18n="submit" disabled></button>
+    </form>
+  </section>
+
+  <!-- ============ MÀN HÌNH: THÀNH CÔNG ============ -->
+  <section id="screen-success" class="screen hidden">
+    <div class="card card-success">
+      <h1 data-i18n="success.title"></h1>
+      <p data-i18n="success.body"></p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ MODAL CROP ============ -->
+<div id="crop-modal" class="modal hidden">
+  <div class="modal-inner">
+    <div class="crop-area">
+      <img id="crop-image" alt="" />
+    </div>
+    <p class="muted small" data-i18n="crop.hint"></p>
+    <div id="crop-face-status" class="status"></div>
+    <div class="modal-actions">
+      <button type="button" id="btn-crop-cancel" class="btn btn-secondary" data-i18n="crop.cancel"></button>
+      <button type="button" id="btn-crop-confirm" class="btn btn-primary" data-i18n="crop.confirm"></button>
+    </div>
+  </div>
+</div>
+
+<template id="family-row-template">
+  <div class="family-row">
+    <button type="button" class="btn-remove-family" data-i18n-title="fam.remove">✕</button>
+
+    <div class="field">
+      <label data-i18n="fam.relation"></label>
+      <select class="f-relation" required></select>
+    </div>
+    <div class="field">
+      <label data-i18n="fam.name"></label>
+      <input type="text" class="f-name" required />
+    </div>
+    <div class="field">
+      <label data-i18n="fam.dob"></label>
+      <input type="date" class="f-dob" required />
+    </div>
+    <div class="field">
+      <label data-i18n="fam.nationality"></label>
+      <select class="f-nationality" required></select>
+    </div>
+    <div class="field">
+      <label data-i18n="fam.living"></label>
+      <div class="radio-group f-song-cung-group">
+        <label><input type="radio" class="f-song-cung" value="co" /> <span data-i18n="yes"></span></label>
+        <label><input type="radio" class="f-song-cung" value="khong" /> <span data-i18n="no"></span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label data-i18n="fam.workplace"></label>
+      <input type="text" class="f-workplace" />
+    </div>
+    <div class="field">
+      <label data-i18n="fam.zairyu"></label>
+      <input type="text" class="f-zairyu" required />
+    </div>
+  </div>
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
