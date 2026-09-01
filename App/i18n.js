@@ -1,0 +1,323 @@
+// ============================================================
+// ĐA NGÔN NGỮ (i18n) — Nhật / Việt / Anh
+// Thêm ngôn ngữ mới: thêm 1 khối vào I18N + 1 nút vào #lang-switch (index.html)
+// ============================================================
+
+const APP_NAME = "Zairyu Desk";
+const LANG_DEFAULT = "ja"; // ngôn ngữ mở lần đầu
+const LANG_LIST = ["ja", "vi", "en"];
+// true  = nhớ ngôn ngữ nhân viên đã chọn, lần sau mở link giữ nguyên
+// false = mọi lần mở link đều bắt đầu lại bằng LANG_DEFAULT
+const LANG_REMEMBER = true;
+const LANG_STORAGE_KEY = "zairyu-desk-lang";
+
+const I18N = {
+  // ------------------------------------------------------------
+  ja: {
+    "html.lang": "ja",
+    "app.tagline": "在留資格申請用　写真・情報の提出",
+    "loading": "読み込み中…",
+
+    "invalid.title": "⚠️ 無効なリンクです",
+    "invalid.body": "このリンクは正しくないか、無効になっています。人事担当者にお問い合わせください。",
+
+    "expired.title": "⏰ 提出期限が過ぎました",
+    "expired.body": "「{dot}」の提出期限（{han}）は終了しました。",
+    "expired.body2": "期限後に提出が必要な場合は、人事担当者に新しいリンクの発行をご依頼ください。",
+
+    "info.round": "提出回",
+    "info.deadline": "提出期限",
+
+    "q1.title": "1. 婚姻状況",
+    "q1.sub": "現在、結婚されていますか？",
+    "q1.yes": "はい（既婚）",
+    "q1.no": "いいえ（未婚）",
+
+    "q2.title": "2. 在日親族",
+    "q2.sub": "日本に住んでいるご家族・ご親族はいますか？",
+    "q2.add": "＋ 親族を追加",
+
+    "q3.title": "3. 母国の連絡先",
+    "q3.sub": "特定技能の方のみご記入ください。",
+    "q3.phone": "母国の電話番号（ご家族の番号でも可。連絡が取れる番号）",
+    "q3.address": "母国の住所",
+
+    "q4.title": "4. 顔写真",
+    "q4.c1": "背景は明るく、影が写っていないこと",
+    "q4.c2": "帽子をかぶっていないこと",
+    "q4.c3": "メガネなし、またはレンズに光の反射がないこと",
+    "q4.c4": "正面を向いた、6か月以内に撮影した写真",
+    "q4.c5": "加工アプリ・美顔加工をした写真は不可",
+    "q4.choose": "📷 写真を選ぶ / 撮影する",
+    "q4.retake": "別の写真を選び直す",
+    "q4.ok": "✓ 写真は問題ありません。提出できます",
+
+    "crop.hint": "枠（3:4／縦4cm×横3cm）に顔が収まるよう、ドラッグ・拡大してください。",
+    "crop.checking": "写真を確認しています…",
+    "crop.cancel": "キャンセル",
+    "crop.confirm": "この写真を使う",
+    "crop.noface": "✗ 顔を検出できませんでした。顔が枠内にはっきり写るよう撮り直してください。",
+    "crop.manyfaces": "✗ 顔が2つ以上検出されました。写真には本人のみが写るようにしてください。",
+
+    "submit": "写真・情報を提出する",
+    "submitting": "送信中…",
+    "submit.error": "送信中にエラーが発生しました（通信状況、または js/config.js の Supabase 設定をご確認ください）。詳細：",
+
+    "success.title": "✅ 提出が完了しました",
+    "success.body": "ありがとうございました。写真・情報に修正が必要な場合は、人事担当者からご連絡します。",
+
+    "yes": "はい",
+    "no": "いいえ",
+    "select": "-- 選択 --",
+
+    "fam.remove": "削除",
+    "fam.relation": "1. あなたとの続柄",
+    "fam.name": "2. 氏名（フルネーム）",
+    "fam.dob": "生年月日",
+    "fam.nationality": "国籍",
+    "fam.living": "3. その方と同居していますか？",
+    "fam.workplace": "4. その方の勤務先（会社名）または学校名",
+    "fam.zairyu": "5. その方の在留カード番号",
+
+    "rel.anh_trai": "兄",
+    "rel.chi_gai": "姉",
+    "rel.em_trai": "弟",
+    "rel.em_gai": "妹",
+    "rel.chong": "夫",
+    "rel.vo": "妻",
+    "rel.cha": "父",
+    "rel.me": "母",
+
+    "nat.indonesia": "インドネシア",
+    "nat.vietnam": "ベトナム",
+    "nat.myanmar": "ミャンマー",
+    "nat.philippines": "フィリピン",
+  },
+
+  // ------------------------------------------------------------
+  vi: {
+    "html.lang": "vi",
+    "app.tagline": "Nộp ảnh & thông tin hồ sơ tư cách lưu trú",
+    "loading": "Đang tải…",
+
+    "invalid.title": "⚠️ Link không hợp lệ",
+    "invalid.body": "Link này không đúng hoặc đã bị huỷ. Vui lòng liên hệ bộ phận nhân sự để được cấp lại link.",
+
+    "expired.title": "⏰ Đã hết hạn nộp",
+    "expired.body": "Đợt “{dot}” đã hết hạn nộp ({han}).",
+    "expired.body2": "Vui lòng liên hệ bộ phận nhân sự để được cấp link mới nếu cần nộp trễ hạn.",
+
+    "info.round": "Đợt",
+    "info.deadline": "Hạn nộp",
+
+    "q1.title": "1. Tình trạng hôn nhân",
+    "q1.sub": "Anh/chị hiện đã kết hôn chưa?",
+    "q1.yes": "Có (đã kết hôn)",
+    "q1.no": "Không (chưa kết hôn)",
+
+    "q2.title": "2. Người thân đang sinh sống tại Nhật Bản",
+    "q2.sub": "Hiện anh/chị có người thân (gia đình) nào đang sinh sống tại Nhật Bản không?",
+    "q2.add": "+ Thêm người thân",
+
+    "q3.title": "3. Thông tin liên hệ tại quê nhà",
+    "q3.sub": "Chỉ áp dụng cho diện Kỹ năng đặc định (Tokutei Gino).",
+    "q3.phone": "Số điện thoại tại quê nhà (có thể dùng số của người thân, miễn nghe gọi được)",
+    "q3.address": "Địa chỉ tại quê nhà",
+
+    "q4.title": "4. Ảnh chân dung",
+    "q4.c1": "Nền sáng, không có bóng đổ phía sau",
+    "q4.c2": "Không đội mũ / nón",
+    "q4.c3": "Không đeo kính, hoặc kính không phản chiếu ánh sáng",
+    "q4.c4": "Nhìn thẳng vào máy ảnh, ảnh chụp trong vòng 6 tháng gần đây",
+    "q4.c5": "Không dùng ảnh đã chỉnh sửa qua app/phần mềm làm đẹp",
+    "q4.choose": "📷 Chọn / chụp ảnh",
+    "q4.retake": "Chọn lại ảnh khác",
+    "q4.ok": "✓ Ảnh hợp lệ, đã sẵn sàng để nộp",
+
+    "crop.hint": "Kéo / phóng để mặt nằm gọn trong khung (tỉ lệ 3:4 theo quy cách ảnh visa 4cm×3cm).",
+    "crop.checking": "Đang kiểm tra ảnh…",
+    "crop.cancel": "Huỷ",
+    "crop.confirm": "Dùng ảnh này",
+    "crop.noface": "✗ Không nhận diện được khuôn mặt nào. Vui lòng chụp lại, để mặt rõ trong khung.",
+    "crop.manyfaces": "✗ Phát hiện nhiều hơn 1 khuôn mặt trong ảnh. Ảnh chỉ được có 1 người.",
+
+    "submit": "Nộp ảnh & thông tin",
+    "submitting": "Đang nộp…",
+    "submit.error": "Có lỗi khi nộp (kiểm tra lại kết nối mạng, hoặc cấu hình Supabase trong js/config.js). Chi tiết: ",
+
+    "success.title": "✅ Đã nộp thành công",
+    "success.body": "Cảm ơn anh/chị. Bộ phận nhân sự sẽ kiểm tra và liên hệ lại nếu ảnh/thông tin cần chỉnh sửa.",
+
+    "yes": "Có",
+    "no": "Không",
+    "select": "-- Chọn --",
+
+    "fam.remove": "Xoá",
+    "fam.relation": "1. Mối quan hệ với anh/chị",
+    "fam.name": "2. Họ tên đầy đủ",
+    "fam.dob": "Ngày tháng năm sinh",
+    "fam.nationality": "Quốc tịch",
+    "fam.living": "3. Hiện có đang sống cùng người này không?",
+    "fam.workplace": "4. Tên công ty (nếu đi làm) hoặc tên trường (nếu đi học) của người đó",
+    "fam.zairyu": "5. Mã số thẻ ngoại kiều của người thân đó",
+
+    "rel.anh_trai": "Anh trai (兄)",
+    "rel.chi_gai": "Chị gái (姉)",
+    "rel.em_trai": "Em trai (弟)",
+    "rel.em_gai": "Em gái (妹)",
+    "rel.chong": "Chồng (夫)",
+    "rel.vo": "Vợ (妻)",
+    "rel.cha": "Cha (父)",
+    "rel.me": "Mẹ (母)",
+
+    "nat.indonesia": "Indonesia",
+    "nat.vietnam": "Việt Nam",
+    "nat.myanmar": "Myanmar",
+    "nat.philippines": "Philippines",
+  },
+
+  // ------------------------------------------------------------
+  en: {
+    "html.lang": "en",
+    "app.tagline": "Photo & information submission for residence status applications",
+    "loading": "Loading…",
+
+    "invalid.title": "⚠️ Invalid link",
+    "invalid.body": "This link is incorrect or has been cancelled. Please contact your HR representative.",
+
+    "expired.title": "⏰ Submission closed",
+    "expired.body": "The submission period “{dot}” closed on {han}.",
+    "expired.body2": "If you still need to submit, please ask HR to issue a new link.",
+
+    "info.round": "Round",
+    "info.deadline": "Deadline",
+
+    "q1.title": "1. Marital status",
+    "q1.sub": "Are you currently married?",
+    "q1.yes": "Yes (married)",
+    "q1.no": "No (single)",
+
+    "q2.title": "2. Relatives living in Japan",
+    "q2.sub": "Do you have any family members or relatives currently living in Japan?",
+    "q2.add": "+ Add a relative",
+
+    "q3.title": "3. Contact details in your home country",
+    "q3.sub": "For Specified Skilled Worker (Tokutei Gino) status only.",
+    "q3.phone": "Phone number in your home country (a relative's number is fine, as long as it can be reached)",
+    "q3.address": "Address in your home country",
+
+    "q4.title": "4. Portrait photo",
+    "q4.c1": "Bright background with no shadow behind you",
+    "q4.c2": "No hat or head covering",
+    "q4.c3": "No glasses, or glasses with no light reflection",
+    "q4.c4": "Facing the camera, taken within the last 6 months",
+    "q4.c5": "No photos edited with beauty or filter apps",
+    "q4.choose": "📷 Choose / take a photo",
+    "q4.retake": "Choose a different photo",
+    "q4.ok": "✓ Photo accepted and ready to submit",
+
+    "crop.hint": "Drag and zoom so your face fits inside the frame (3:4 ratio, per the 4cm × 3cm visa photo standard).",
+    "crop.checking": "Checking the photo…",
+    "crop.cancel": "Cancel",
+    "crop.confirm": "Use this photo",
+    "crop.noface": "✗ No face detected. Please retake the photo with your face clearly inside the frame.",
+    "crop.manyfaces": "✗ More than one face detected. The photo must show only you.",
+
+    "submit": "Submit photo & information",
+    "submitting": "Submitting…",
+    "submit.error": "Submission failed (check your internet connection, or the Supabase settings in js/config.js). Details: ",
+
+    "success.title": "✅ Submitted successfully",
+    "success.body": "Thank you. HR will review your submission and contact you if anything needs to be corrected.",
+
+    "yes": "Yes",
+    "no": "No",
+    "select": "-- Select --",
+
+    "fam.remove": "Remove",
+    "fam.relation": "1. Relationship to you",
+    "fam.name": "2. Full name",
+    "fam.dob": "Date of birth",
+    "fam.nationality": "Nationality",
+    "fam.living": "3. Do you currently live with this person?",
+    "fam.workplace": "4. Their company name (if working) or school name (if studying)",
+    "fam.zairyu": "5. Their residence card number",
+
+    "rel.anh_trai": "Older brother (兄)",
+    "rel.chi_gai": "Older sister (姉)",
+    "rel.em_trai": "Younger brother (弟)",
+    "rel.em_gai": "Younger sister (妹)",
+    "rel.chong": "Husband (夫)",
+    "rel.vo": "Wife (妻)",
+    "rel.cha": "Father (父)",
+    "rel.me": "Mother (母)",
+
+    "nat.indonesia": "Indonesia",
+    "nat.vietnam": "Vietnam",
+    "nat.myanmar": "Myanmar",
+    "nat.philippines": "Philippines",
+  },
+};
+
+// ------------------------------------------------------------
+// Bộ máy dịch
+// ------------------------------------------------------------
+let currentLang = LANG_DEFAULT;
+
+function readSavedLang() {
+  if (!LANG_REMEMBER) return LANG_DEFAULT;
+  try {
+    const saved = localStorage.getItem(LANG_STORAGE_KEY);
+    if (saved && LANG_LIST.includes(saved)) return saved;
+  } catch (e) {
+    /* trình duyệt chặn localStorage — bỏ qua, dùng mặc định */
+  }
+  return LANG_DEFAULT;
+}
+
+function saveLang(lang) {
+  if (!LANG_REMEMBER) return;
+  try {
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+  } catch (e) {
+    /* bỏ qua */
+  }
+}
+
+/** Lấy chuỗi đã dịch. vars: { dot: "...", han: "..." } thay cho {dot}, {han} */
+function t(key, vars) {
+  const dict = I18N[currentLang] || I18N[LANG_DEFAULT];
+  let s = dict[key];
+  if (s === undefined) s = (I18N[LANG_DEFAULT] || {})[key];
+  if (s === undefined) return key;
+  if (vars) {
+    for (const k of Object.keys(vars)) {
+      s = s.split("{" + k + "}").join(vars[k]);
+    }
+  }
+  return s;
+}
+
+/** Định dạng ngày theo ngôn ngữ đang chọn */
+function formatDate(iso) {
+  const [y, m, d] = iso.split("-");
+  if (currentLang === "ja") return `${Number(y)}年${Number(m)}月${Number(d)}日`;
+  if (currentLang === "en") {
+    const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${Number(d)} ${MON[Number(m) - 1]} ${y}`;
+  }
+  return `${d}/${m}/${y}`;
+}
+
+/** Dịch toàn bộ phần tử tĩnh có gắn data-i18n / data-i18n-ph trong 1 gốc DOM */
+function applyI18nTo(root) {
+  root.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  root.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    el.title = t(el.dataset.i18nTitle);
+  });
+  root.querySelectorAll("[data-i18n-ph]").forEach((el) => {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+}
