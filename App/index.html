@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Nộp ảnh & thông tin nhân viên</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ MÀN HÌNH: ĐANG TẢI ============ -->
+  <section id="screen-loading" class="screen">
+    <p>Đang tải…</p>
+  </section>
+
+  <!-- ============ MÀN HÌNH: LINK KHÔNG HỢP LỆ ============ -->
+  <section id="screen-invalid" class="screen hidden">
+    <div class="card card-error">
+      <h1>⚠️ Link không hợp lệ</h1>
+      <p>Link này không đúng hoặc đã bị huỷ. Vui lòng liên hệ HR để được cấp lại link.</p>
+    </div>
+  </section>
+
+  <!-- ============ MÀN HÌNH: ĐÃ HẾT HẠN ============ -->
+  <section id="screen-expired" class="screen hidden">
+    <div class="card card-error">
+      <h1>⏰ Đã hết hạn nộp</h1>
+      <p>Đợt thu ảnh <strong id="expired-dot"></strong> đã hết hạn nộp (<span id="expired-han"></span>).</p>
+      <p>Vui lòng liên hệ HR để được cấp link mới nếu cần nộp trễ hạn.</p>
+    </div>
+  </section>
+
+  <!-- ============ MÀN HÌNH: FORM CHÍNH ============ -->
+  <section id="screen-form" class="screen hidden">
+
+    <header class="topbar">
+      <h1>Nộp ảnh & thông tin nhân viên</h1>
+      <div class="who">
+        <div><strong id="info-hoten"></strong> — <span id="info-congty"></span> (<span id="info-nhomg"></span>)</div>
+        <div class="muted">Đợt: <span id="info-dot"></span> · Hạn nộp: <span id="info-han"></span></div>
+      </div>
+    </header>
+
+    <form id="main-form">
+
+      <!-- ---- 1. Tình trạng hôn nhân ---- -->
+      <div class="card">
+        <h2>1. Tình trạng hôn nhân</h2>
+        <p class="muted">Anh/chị hiện đã kết hôn chưa?</p>
+        <div class="radio-group" id="group-hon-nhan">
+          <label><input type="radio" name="hon-nhan" value="co" /> Có (đã kết hôn)</label>
+          <label><input type="radio" name="hon-nhan" value="khong" /> Không (chưa kết hôn)</label>
+        </div>
+      </div>
+
+      <!-- ---- 2. Người thân đang sống tại Nhật (在日親族) ---- -->
+      <div class="card">
+        <h2>2. Người thân đang sinh sống tại Nhật Bản</h2>
+        <p class="muted">Hiện anh/chị có người thân (gia đình) nào đang sinh sống tại Nhật Bản không?</p>
+        <div class="radio-group" id="group-nguoi-than-nhat">
+          <label><input type="radio" name="nguoi-than-nhat" value="co" /> Có</label>
+          <label><input type="radio" name="nguoi-than-nhat" value="khong" /> Không</label>
+        </div>
+
+        <div id="relatives-block" class="hidden">
+          <div id="family-list"></div>
+          <button type="button" id="btn-add-family" class="btn btn-secondary">+ Thêm người thân</button>
+        </div>
+      </div>
+
+      <!-- ---- 3. Liên hệ quê nhà (chỉ hiện với diện Tokutei Gino) ---- -->
+      <div class="card hidden" id="card-tokutei">
+        <h2>3. Thông tin liên hệ tại quê nhà</h2>
+        <p class="muted">Áp dụng riêng cho diện Kỹ năng đặc định (Tokutei Gino).</p>
+        <div class="field">
+          <label>Số điện thoại tại quê nhà (có thể dùng số của người thân, miễn nghe gọi được)</label>
+          <input type="tel" id="que-nha-sdt" />
+        </div>
+        <div class="field" style="margin-top:8px;">
+          <label>Địa chỉ tại quê nhà</label>
+          <input type="text" id="que-nha-diachi" />
+        </div>
+      </div>
+
+      <!-- ---- 4. Ảnh chân dung ---- -->
+      <div class="card">
+        <h2>4. Ảnh chân dung</h2>
+
+        <ul class="checklist">
+          <li>Nền sáng, không có bóng đổ phía sau</li>
+          <li>Không đội mũ / nón</li>
+          <li>Không đeo kính, hoặc kính không phản chiếu ánh sáng</li>
+          <li>Nhìn thẳng vào máy ảnh, ảnh chụp trong vòng 6 tháng gần đây</li>
+          <li>Không dùng ảnh đã chỉnh sửa qua app/phần mềm làm đẹp</li>
+        </ul>
+
+        <div id="photo-picker">
+          <label class="btn btn-primary" for="photo-input">📷 Chọn / chụp ảnh</label>
+          <input type="file" id="photo-input" accept="image/*" capture="user" hidden />
+        </div>
+
+        <div id="photo-result" class="hidden">
+          <img id="photo-preview" alt="Ảnh đã crop" />
+          <div id="photo-status" class="status"></div>
+          <button type="button" id="btn-retake" class="btn btn-secondary">Chọn lại ảnh khác</button>
+        </div>
+      </div>
+
+      <div id="submit-error" class="error-box hidden"></div>
+
+      <button type="submit" id="btn-submit" class="btn btn-primary btn-submit" disabled>Nộp ảnh & thông tin</button>
+    </form>
+  </section>
+
+  <!-- ============ MÀN HÌNH: THÀNH CÔNG ============ -->
+  <section id="screen-success" class="screen hidden">
+    <div class="card card-success">
+      <h1>✅ Đã nộp thành công</h1>
+      <p>Cảm ơn bạn. HR sẽ kiểm tra và liên hệ lại nếu ảnh/thông tin cần chỉnh sửa.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ MODAL CROP ============ -->
+<div id="crop-modal" class="modal hidden">
+  <div class="modal-inner">
+    <div class="crop-area">
+      <img id="crop-image" alt="Ảnh cần crop" />
+    </div>
+    <p class="muted small">Kéo / phóng để mặt nằm gọn trong khung (tỉ lệ 3:4 theo quy cách ảnh visa 4cm×3cm).</p>
+    <div id="crop-face-status" class="status"></div>
+    <div class="modal-actions">
+      <button type="button" id="btn-crop-cancel" class="btn btn-secondary">Huỷ</button>
+      <button type="button" id="btn-crop-confirm" class="btn btn-primary">Dùng ảnh này</button>
+    </div>
+  </div>
+</div>
+
+<template id="family-row-template">
+  <div class="family-row">
+    <button type="button" class="btn-remove-family" title="Xoá">✕</button>
+
+    <div class="field">
+      <label>1. Mối quan hệ với anh/chị</label>
+      <select class="f-relation" required></select>
+    </div>
+    <div class="field">
+      <label>2. Họ tên đầy đủ</label>
+      <input type="text" class="f-name" required />
+    </div>
+    <div class="field">
+      <label>Ngày tháng năm sinh</label>
+      <input type="date" class="f-dob" required />
+    </div>
+    <div class="field">
+      <label>Quốc tịch</label>
+      <select class="f-nationality" required></select>
+    </div>
+    <div class="field">
+      <label>3. Hiện có đang sống cùng người này không?</label>
+      <div class="radio-group f-song-cung-group">
+        <label><input type="radio" class="f-song-cung" value="co" /> Có</label>
+        <label><input type="radio" class="f-song-cung" value="khong" /> Không</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>4. Tên công ty (nếu đi làm) hoặc tên trường (nếu đi học) người đó đang làm việc/theo học</label>
+      <input type="text" class="f-workplace" />
+    </div>
+    <div class="field">
+      <label>5. Mã số thẻ ngoại kiều của người thân đó</label>
+      <input type="text" class="f-zairyu" required />
+    </div>
+  </div>
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
