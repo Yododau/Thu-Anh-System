@@ -3,7 +3,7 @@
 // (xem hướng dẫn trong file HUONG-DAN-SETUP.md)
 // ============================================================
 const SUPABASE_CONFIG = {
-  url: "https://kkgvuimvanokhtagjcsx.supabase.co/rest/v1/", // dán Project URL từ Supabase
+  url: "https://kkgvuimvanokhtagjcsx.supabase.co", // dán Project URL từ Supabase
   anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZ3Z1aW12YW5va2h0YWdqY3N4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNjUyMjYsImV4cCI6MjEwMzg0MTIyNn0.jCvznOQyTDRxIr0zvy5Jfy4uVQ-UgeV4SDyxBpziPFs", // dán anon public key từ Supabase
   bucket: "submission-photos", // tên bucket Storage đã tạo theo schema.sql
 };
