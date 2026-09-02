@@ -3,8 +3,9 @@
 // Chữ hiển thị lấy từ js/i18n.js qua hàm t("khoá")
 // ============================================================
 
-const FACE_MODELS_URL =
-  "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights";
+// Model của lớp gác cổng — dùng chung nguồn jsDelivr với thư viện face-api.js
+// (bản fork vladmandic) đang nạp trong index.html để cùng một API, cùng độ tin cậy.
+const FACE_MODELS_URL = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/";
 
 const els = {
   loading: document.getElementById("screen-loading"),
@@ -280,6 +281,11 @@ function openCropModal(dataUrl) {
     dragMode: "move",
     autoCropArea: 0.9,
     background: false,
+    // Khung crop phải CỐ ĐỊNH (đúng chuẩn ISA) — nhân viên chỉ được kéo/phóng
+    // TẤM ẢNH vào bên trong khung, không được kéo dãn/thu nhỏ chính cái khung.
+    cropBoxResizable: false,
+    cropBoxMovable: false,
+    toggleDragModeOnDblclick: false,
   });
 }
 

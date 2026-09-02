@@ -116,7 +116,10 @@
 
         <div id="photo-picker">
           <label class="btn btn-primary" for="photo-input" data-i18n="q4.choose"></label>
-          <input type="file" id="photo-input" accept="image/*" capture="user" hidden />
+          <!-- Bỏ thuộc tính capture="user": có capture, điện thoại sẽ ép mở thẳng
+               camera, không cho chọn ảnh có sẵn trong album. Bỏ đi thì trình duyệt
+               trên điện thoại sẽ hiện bảng cho chọn "Chụp ảnh" hoặc "Thư viện ảnh". -->
+          <input type="file" id="photo-input" accept="image/*" hidden />
         </div>
 
         <div id="photo-result" class="hidden">
@@ -196,7 +199,10 @@
 </template>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js"></script>
+<!-- Đường dẫn cdnjs cũ của face-api.js bị 404 (không tồn tại trên cdnjs) nên
+     lớp gác cổng luôn im lặng "pass" mọi ảnh. Đổi sang bản fork vladmandic/face-api
+     (đã kiểm tra tải được, mô hình cũng tải được) qua jsDelivr. -->
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/config.js"></script>
