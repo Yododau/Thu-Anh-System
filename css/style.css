@@ -72,6 +72,13 @@ body {
   font-size: 0.78rem;
   color: var(--muted);
   line-height: 1.35;
+  /* Câu mô tả (app.tagline) dài ngắn khác nhau tuỳ ngôn ngữ — bản tiếng Anh dài
+     nhất nên dễ bị xuống dòng và đẩy nút chọn ngôn ngữ (lang-switch) rớt xuống
+     dòng dưới, làm header cao thấp không đều giữa 3 ngôn ngữ. Ép 1 dòng + rút
+     gọn bằng "…" khi không đủ chỗ để header luôn cao bằng nhau. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lang-switch {
