@@ -131,20 +131,20 @@ const I18N = {
     "loading": "Đang tải…",
 
     "invalid.title": "⚠️ Link không hợp lệ",
-    "invalid.body": "Link này không đúng hoặc đã bị huỷ. Vui lòng liên hệ bộ phận nhân sự để được cấp lại link.",
+    "invalid.body": "Link này không đúng hoặc đã bị huỷ. Vui lòng liên hệ người phụ trách.",
 
     "expired.title": "⏰ Đã hết hạn nộp",
     "expired.body": "Đợt “{dot}” đã hết hạn nộp ({han}).",
-    "expired.body2": "Vui lòng liên hệ bộ phận nhân sự để được cấp link mới nếu cần nộp trễ hạn.",
+    "expired.body2": "Vui lòng liên hệ người phụ trách.",
 
     "info.round": "Đợt",
     "info.deadline": "Hạn nộp",
 
     // ---- màn hình nhận diện ----
-    "id.title": "Xác nhận đúng người",
-    "id.sub": "Đây là link dùng chung cho cả công ty. Vui lòng xác nhận thông tin của anh/chị trước.",
+    "id.title": "Xác nhận danh tính",
+    "id.sub": "Vui lòng xác nhận danh tính của bạn.",
     "id.name": "Họ và tên (IN HOA, không dấu)",
-    "id.name.hint": "Chép đúng dòng chữ Latinh in trên thẻ ngoại kiều của anh/chị, viết IN HOA, không dấu.",
+    "id.name.hint": "Xin vui lòng nhập chữ in hoa, không dấu theo đúng tên trên thẻ ngoại kiều của bạn.",
     "id.dob": "Ngày tháng năm sinh",
     "id.nat": "Quốc tịch",
     "id.continue": "Xác nhận và tiếp tục",
@@ -164,16 +164,16 @@ const I18N = {
     "required.note": "Tất cả các mục đều bắt buộc (phần chi tiết người thân chỉ cần khai nếu chọn “Có”).",
 
     "q1.title": "1. Tình trạng hôn nhân",
-    "q1.sub": "Anh/chị hiện đã kết hôn chưa?",
+    "q1.sub": "Bạn đã kết hôn chưa?",
     "q1.yes": "Có (đã kết hôn)",
     "q1.no": "Không (chưa kết hôn)",
 
     "q2.title": "2. Người thân đang sinh sống tại Nhật Bản",
-    "q2.sub": "Hiện anh/chị có người thân (gia đình) nào đang sinh sống tại Nhật Bản không?",
+    "q2.sub": "Bạn có người thân nào đang sinh sống tại Nhật Bản không?",
     "q2.add": "+ Thêm người thân",
 
     "q3.title": "3. Thông tin liên hệ tại quê nhà",
-    "q3.sub": "Chỉ áp dụng cho diện Kỹ năng đặc định (Tokutei Gino).",
+    "q3.sub": "Dành cho diện Kỹ năng đặc định (Tokutei Gino).",
     "q3.phone": "Số điện thoại tại quê nhà (có thể dùng số của người thân, miễn nghe gọi được)",
     "q3.address": "Địa chỉ tại quê nhà",
 
@@ -182,13 +182,13 @@ const I18N = {
     "q4.c2": "Không đội mũ / nón",
     "q4.c3": "Không đeo kính, hoặc kính không phản chiếu ánh sáng",
     "q4.c4": "Nhìn thẳng vào máy ảnh, ảnh chụp trong vòng 6 tháng gần đây",
-    "q4.c5": "Không dùng ảnh đã chỉnh sửa qua app/phần mềm làm đẹp",
+    "q4.c5": "Không dùng ảnh đã chỉnh sửa qua phần mềm làm đẹp",
     "q4.choose": "📷 Chọn / chụp ảnh",
     "q4.retake": "Chọn lại ảnh khác",
     "q4.ok": "✓ Ảnh hợp lệ, đã sẵn sàng để nộp",
 
     "crop.title": "Căn chỉnh ảnh",
-    "crop.hint": "Kéo và phóng ảnh sao cho đầu và vai trùng với viền nét đứt. Khung cố định tỉ lệ 3:4 theo quy cách ảnh visa 4cm × 3cm.",
+    "crop.hint": "Kéo và phóng ảnh sao cho đầu và vai trùng với viền nét đứt.",
     "crop.checking": "Đang kiểm tra ảnh…",
     "crop.cancel": "Huỷ",
     "crop.confirm": "Dùng ảnh này",
@@ -204,7 +204,7 @@ const I18N = {
     "err.fam.none": "2. Người thân tại Nhật (đã chọn “Có” nhưng chưa khai người nào)",
 
     "success.title": "✅ Đã nộp thành công",
-    "success.body": "Cảm ơn anh/chị. Bộ phận nhân sự sẽ kiểm tra và liên hệ lại nếu ảnh/thông tin cần chỉnh sửa.",
+    "success.body": "Cảm ơn bạn. Người phụ trách sẽ kiểm tra và liên hệ lại nếu ảnh/thông tin cần chỉnh sửa.",
 
     "yes": "Có",
     "no": "Không",
@@ -212,18 +212,18 @@ const I18N = {
 
     "fam.no": "Người thân {n}",
     "fam.remove": "Xoá",
-    "fam.relation": "1. Mối quan hệ với anh/chị",
+    "fam.relation": "1. Mối quan hệ với bạn",
     "fam.name": "2. Họ tên đầy đủ",
     "fam.dob": "Ngày tháng năm sinh",
     "fam.nationality": "Quốc tịch",
-    "fam.living": "3. Hiện có đang sống cùng người này không?",
-    "fam.workplace": "4. Tên công ty (nếu đi làm) hoặc tên trường (nếu đi học) của người đó",
-    "fam.zairyu": "5. Mã số thẻ ngoại kiều của người thân đó",
+    "fam.living": "3. Bạn có đang sống cùng người này không?",
+    "fam.workplace": "4. Tên công ty (nếu đi làm) hoặc tên trường (nếu đi học) của người thân",
+    "fam.zairyu": "5. Mã số thẻ ngoại kiều của người thân",
 
-    "rel.anh_trai": "Anh trai (兄)",
-    "rel.chi_gai": "Chị gái (姉)",
-    "rel.em_trai": "Em trai (弟)",
-    "rel.em_gai": "Em gái (妹)",
+    "rel.anh_trai": "Anh trai ruột (兄)",
+    "rel.chi_gai": "Chị gái ruột (姉)",
+    "rel.em_trai": "Em trai ruột (弟)",
+    "rel.em_gai": "Em gái ruột (妹)",
     "rel.chong": "Chồng (夫)",
     "rel.vo": "Vợ (妻)",
     "rel.cha": "Cha (父)",
