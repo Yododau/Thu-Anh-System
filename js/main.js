@@ -24,7 +24,7 @@ const els = {
   idDot: document.getElementById("id-dot"),
   idHan: document.getElementById("id-han"),
   idName: document.getElementById("id-name"),
-  idDob: document.getElementById("id-dob"),
+  idDob: document.getElementById("id-dob-group"), // bộ 3 select ngày/tháng/năm — xem mục 0b
   idNat: document.getElementById("id-nat"),
   identifyError: document.getElementById("identify-error"),
   btnIdentify: document.getElementById("btn-identify"),
@@ -49,6 +49,8 @@ const els = {
   familyTemplate: document.getElementById("family-row-template"),
 
   cardTokutei: document.getElementById("card-tokutei"),
+  tokuteiCheck: document.getElementById("tokutei-check"),
+  tokuteiFields: document.getElementById("tokutei-fields"),
   queNhaSdt: document.getElementById("que-nha-sdt"),
   queNhaDiaChi: document.getElementById("que-nha-diachi"),
 
@@ -159,6 +161,98 @@ els.langSwitch.addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-lang]");
   if (btn) setLang(btn.dataset.lang);
 });
+
+// ---------------------------------------------------------------
+// 0b. Bộ chọn ngày sinh — 3 <select> (ngày/tháng/năm) thay cho input
+//     type="date" gốc của trình duyệt. Dùng cho cả #id-dob-group (màn hình
+//     nhận diện) và mỗi .f-dob-group (mỗi dòng người thân trong form chính).
+//
+//     Lý do đổi khỏi input type="date":
+//     1) Trên máy tính, lịch mặc định của trình duyệt bắt cuộn/bấm lùi từng
+//        tháng để về đúng năm sinh (thường lùi 20-40 năm) — rất chậm.
+//     2) Trên iPhone, nếu máy đặt vùng miền Nhật Bản, bộ chọn ngày hệ thống
+//        hiển thị theo NIÊN HIỆU NHẬT (Reiwa/Heisei...) thay vì năm dương
+//        lịch — dù trang web đang hiển thị tiếng Việt/Anh, vì input type=date
+//        theo lịch của HỆ ĐIỀU HÀNH, không theo ngôn ngữ trang.
+//     3 select số thuần (do mình tự vẽ) không phụ thuộc lịch hệ điều hành nên
+//     tránh được cả 2 vấn đề trên. Thứ tự hiển thị (ngày-tháng-năm /
+//     tháng-ngày-năm / năm-tháng-ngày) đổi theo ngôn ngữ bằng CSS `order`
+//     (xem style.css, chọn theo thuộc tính lang trên <html>) — không đụng vào
+//     DOM nên giá trị đã chọn không mất khi đổi ngôn ngữ.
+// ---------------------------------------------------------------
+const DOB_MIN_YEAR = 1940;
+const DOB_MAX_YEAR = new Date().getFullYear() - 16; // tối thiểu 16 tuổi
+
+/** Số ngày tối đa của 1 tháng/năm. Năm chưa chọn -> dùng năm nhuận làm mặc
+ *  định (2000) để không mất option 29/2 một cách vô lý. */
+function daysInMonth(year, month) {
+  if (!month) return 31;
+  const y = year || 2000;
+  return new Date(Number(y), Number(month), 0).getDate();
+}
+
+/** Dựng lại danh sách option của select ngày, giữ nguyên lựa chọn cũ nếu vẫn
+ *  còn hợp lệ với tháng/năm mới (vd đang chọn 31, đổi sang tháng 2 -> reset). */
+function rebuildDobDays(group) {
+  const dayEl = group.querySelector(".dob-day");
+  const monthEl = group.querySelector(".dob-month");
+  const yearEl = group.querySelector(".dob-year");
+  const keep = dayEl.value;
+  const max = daysInMonth(yearEl.value, monthEl.value);
+  dayEl.innerHTML =
+    `<option value="">--</option>` +
+    Array.from({ length: max }, (_, i) => i + 1)
+      .map((d) => `<option value="${d}">${d}</option>`)
+      .join("");
+  if (keep && Number(keep) <= max) dayEl.value = keep;
+}
+
+/** Khởi tạo 1 bộ chọn ngày sinh: đổ option tháng/năm + gắn sự kiện tự tính
+ *  lại số ngày trong tháng. Gọi 1 lần cho #id-dob-group, và mỗi lần thêm 1
+ *  dòng người thân mới cho .f-dob-group của dòng đó. */
+function initDobGroup(group) {
+  const monthEl = group.querySelector(".dob-month");
+  const yearEl = group.querySelector(".dob-year");
+
+  monthEl.innerHTML =
+    `<option value="">--</option>` +
+    Array.from({ length: 12 }, (_, i) => i + 1)
+      .map((m) => `<option value="${m}">${m}</option>`)
+      .join("");
+
+  // Năm gần hiện tại xếp trước (đa số nhân viên là người trong độ tuổi lao
+  // động 20-30 nên năm sinh thường gần cuối danh sách nếu xếp tăng dần từ
+  // 1940 — xếp giảm dần từ năm cho phép mới nhất giúp đỡ cuộn/tìm hơn).
+  yearEl.innerHTML =
+    `<option value="">----</option>` +
+    Array.from({ length: DOB_MAX_YEAR - DOB_MIN_YEAR + 1 }, (_, i) => DOB_MAX_YEAR - i)
+      .map((y) => `<option value="${y}">${y}</option>`)
+      .join("");
+
+  rebuildDobDays(group);
+  monthEl.addEventListener("change", () => rebuildDobDays(group));
+  yearEl.addEventListener("change", () => rebuildDobDays(group));
+}
+
+/** Đọc giá trị hiện tại -> chuỗi ISO "YYYY-MM-DD", hoặc "" nếu chưa chọn đủ */
+function getDobValue(group) {
+  const d = group.querySelector(".dob-day").value;
+  const m = group.querySelector(".dob-month").value;
+  const y = group.querySelector(".dob-year").value;
+  if (!d || !m || !y) return "";
+  return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+}
+
+/** Đặt giá trị từ chuỗi ISO "YYYY-MM-DD" (hoặc "" để xoá trắng cả 3 select) */
+function setDobValue(group, iso) {
+  const [y, m, d] = (iso || "").split("-");
+  group.querySelector(".dob-year").value = y || "";
+  group.querySelector(".dob-month").value = m ? String(Number(m)) : "";
+  rebuildDobDays(group);
+  group.querySelector(".dob-day").value = d ? String(Number(d)) : "";
+}
+
+initDobGroup(els.idDob);
 
 // ---------------------------------------------------------------
 // 1. Khởi tạo: đọc token (= 1 công ty + 1 đợt), kiểm tra hợp lệ / hết hạn
@@ -306,7 +400,7 @@ els.idName.addEventListener("input", (e) => {
   }
   clearIdentifyErrorsIfShown();
 });
-els.idDob.addEventListener("change", clearIdentifyErrorsIfShown);
+els.idDob.querySelectorAll("select").forEach((s) => s.addEventListener("change", clearIdentifyErrorsIfShown));
 els.idNat.addEventListener("change", clearIdentifyErrorsIfShown);
 
 function collectIdentifyProblems() {
@@ -314,7 +408,7 @@ function collectIdentifyProblems() {
   if (!els.idName.value.trim()) {
     problems.push({ target: els.idName, mark: els.idName.closest(".field"), label: t("id.err.name") });
   }
-  if (!els.idDob.value) {
+  if (!getDobValue(els.idDob)) {
     problems.push({ target: els.idDob, mark: els.idDob.closest(".field"), label: t("id.err.dob") });
   }
   if (!els.idNat.value) {
@@ -384,7 +478,7 @@ els.identifyForm.addEventListener("submit", (e) => {
   }
 
   const tenChuan = normalizeName(els.idName.value);
-  const ngaySinh = els.idDob.value;
+  const ngaySinh = getDobValue(els.idDob);
   const quocTich = els.idNat.value;
 
   const found = verifyEmployee(currentToken, tenChuan, ngaySinh);
@@ -415,12 +509,27 @@ function enterMainForm() {
   els.infoDot.textContent = tokenInfo.dotThu;
   els.infoHan.textContent = formatDate(tokenInfo.hanNop);
 
-  // Câu hỏi "liên hệ quê nhà" chỉ hiện với diện Tokutei Gino — do app C#
-  // gán sẵn theo dữ liệu Kintone, nhân viên không tự chọn diện của mình.
-  els.cardTokutei.classList.toggle("hidden", currentEmployee.loaiTuCach !== "tokutei_gino");
+  // Câu hỏi "liên hệ quê nhà" giờ LUÔN hiện (card-tokutei không còn bị ẩn cả
+  // khối) — nhân viên tự đánh dấu checkbox có thuộc diện Tokutei Gino hay
+  // không, đánh dấu rồi mới hiện 2 ô nhập. Checkbox được tích sẵn nếu dữ liệu
+  // Kintone (loaiTuCach) đã ghi nhận đúng diện này, để đỡ phải tự tích lại,
+  // nhưng nhân viên vẫn sửa được nếu Kintone ghi sai/chưa cập nhật.
+  els.tokuteiCheck.checked = currentEmployee.loaiTuCach === "tokutei_gino";
+  els.tokuteiFields.classList.toggle("hidden", !els.tokuteiCheck.checked);
 
   showScreen(els.form);
 }
+
+els.tokuteiCheck.addEventListener("change", () => {
+  const checked = els.tokuteiCheck.checked;
+  els.tokuteiFields.classList.toggle("hidden", !checked);
+  if (!checked) {
+    // Bỏ đánh dấu -> xoá luôn 2 ô đã nhập, tránh nộp nhầm dữ liệu đã ẩn đi
+    els.queNhaSdt.value = "";
+    els.queNhaDiaChi.value = "";
+  }
+  refreshErrors();
+});
 
 // "Không phải tôi" — quay lại màn nhận diện, xoá sạch thứ đã nhập
 els.btnNotMe.addEventListener("click", () => {
@@ -433,6 +542,7 @@ els.btnNotMe.addEventListener("click", () => {
   els.mainForm.reset();
   els.familyList.innerHTML = "";
   els.relativesBlock.classList.add("hidden");
+  els.tokuteiFields.classList.add("hidden");
   els.photoResult.classList.add("hidden");
   els.photoPicker.classList.remove("hidden");
   els.photoStatus.textContent = "";
@@ -440,7 +550,7 @@ els.btnNotMe.addEventListener("click", () => {
   document.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
 
   els.idName.value = "";
-  els.idDob.value = "";
+  setDobValue(els.idDob, "");
   els.idNat.value = "";
   els.identifyError.classList.add("hidden");
 
@@ -461,6 +571,7 @@ function addFamilyRow() {
   applyI18nTo(row); // dịch nhãn trong dòng vừa tạo
   fillSelect(row.querySelector(".f-relation"), RELATION_VALUES, "rel.");
   fillSelect(row.querySelector(".f-nationality"), NATIONALITY_VALUES, "nat.");
+  initDobGroup(row.querySelector(".f-dob-group"));
 
   // đặt name riêng cho mỗi dòng để 2 radio "sống cùng" của các dòng khác nhau
   // không bị tính chung 1 nhóm
@@ -503,7 +614,7 @@ function collectFamilyData() {
     data.push({
       quanHe: row.querySelector(".f-relation").value,
       hoTen: row.querySelector(".f-name").value.trim(),
-      ngaySinh: row.querySelector(".f-dob").value,
+      ngaySinh: getDobValue(row.querySelector(".f-dob-group")),
       quocTich: row.querySelector(".f-nationality").value,
       dangSongCung: songCungEl ? songCungEl.value : null,
       congTyTruong: row.querySelector(".f-workplace").value.trim(),
@@ -552,7 +663,10 @@ function collectProblems() {
 
       checkText(".f-relation", "fam.relation");
       checkText(".f-name", "fam.name");
-      checkText(".f-dob", "fam.dob");
+      const dobGroup = row.querySelector(".f-dob-group");
+      if (!getDobValue(dobGroup)) {
+        add(dobGroup, dobGroup.closest(".field"), `${who} — ${t("fam.dob")}`);
+      }
       checkText(".f-nationality", "fam.nationality");
 
       const songCung = row.querySelector(".f-song-cung:checked");
@@ -566,7 +680,7 @@ function collectProblems() {
     });
   }
 
-  if (!els.cardTokutei.classList.contains("hidden")) {
+  if (els.tokuteiCheck.checked) {
     if (!els.queNhaSdt.value.trim()) {
       add(els.queNhaSdt, els.queNhaSdt.closest(".field"), t("q3.phone"));
     }
@@ -813,7 +927,7 @@ els.mainForm.addEventListener("submit", async (e) => {
     if (uploadError) throw uploadError;
 
     const nguoiThanNhat = getRadioValue("nguoi-than-nhat");
-    const tokuteiVisible = !els.cardTokutei.classList.contains("hidden");
+    const tokuteiChecked = els.tokuteiCheck.checked; // nhân viên tự khai, xem enterMainForm()
 
     const { error: insertError } = await supabase.from("submissions").insert({
       token: currentToken,
@@ -828,7 +942,7 @@ els.mainForm.addEventListener("submit", async (e) => {
       tinh_trang_hon_nhan: getRadioValue("hon-nhan"), // "co" | "khong"
       co_nguoi_than_o_nhat: nguoiThanNhat, // "co" | "khong"
       nguoi_than_o_nhat: nguoiThanNhat === "co" ? collectFamilyData() : [],
-      lien_he_que_nha: tokuteiVisible
+      lien_he_que_nha: tokuteiChecked
         ? { soDienThoai: els.queNhaSdt.value.trim(), diaChi: els.queNhaDiaChi.value.trim() }
         : null,
       photo_path: fileName,

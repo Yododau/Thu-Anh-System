@@ -76,7 +76,7 @@
     <form id="identify-form" novalidate>
       <div class="card">
         <h2 data-i18n="id.title"></h2>
-        <p class="muted" data-i18n="id.sub"></p>
+        <p class="muted card-sub" data-i18n="id.sub"></p>
 
         <div class="field" style="margin-top:14px;">
           <label data-i18n="id.name"></label>
@@ -88,9 +88,16 @@
           <p class="field-hint" data-i18n="id.name.hint"></p>
         </div>
 
+        <!-- Bộ chọn ngày sinh: 3 select riêng (không dùng input type="date") —
+             lý do + cách hoạt động xem chú thích ở đầu js/main.js mục 0b.
+             Thứ tự ngày/tháng/năm hiển thị đổi theo ngôn ngữ qua CSS (style.css). -->
         <div class="field" style="margin-top:14px;">
           <label data-i18n="id.dob"></label>
-          <input type="date" id="id-dob" />
+          <div class="dob-group" id="id-dob-group">
+            <select class="dob-day" aria-label="Day"></select>
+            <select class="dob-month" aria-label="Month"></select>
+            <select class="dob-year" aria-label="Year"></select>
+          </div>
         </div>
 
         <div class="field" style="margin-top:14px;">
@@ -137,7 +144,7 @@
       <!-- ---- 1. Tình trạng hôn nhân ---- -->
       <div class="card">
         <h2 data-i18n="q1.title"></h2>
-        <p class="muted" data-i18n="q1.sub"></p>
+        <p class="muted card-sub" data-i18n="q1.sub"></p>
         <div class="radio-group" id="group-hon-nhan">
           <label><input type="radio" name="hon-nhan" value="co" /> <span data-i18n="q1.yes"></span></label>
           <label><input type="radio" name="hon-nhan" value="khong" /> <span data-i18n="q1.no"></span></label>
@@ -147,7 +154,7 @@
       <!-- ---- 2. Người thân đang sống tại Nhật (在日親族) ---- -->
       <div class="card">
         <h2 data-i18n="q2.title"></h2>
-        <p class="muted" data-i18n="q2.sub"></p>
+        <p class="muted card-sub" data-i18n="q2.sub"></p>
         <div class="radio-group" id="group-nguoi-than-nhat">
           <label><input type="radio" name="nguoi-than-nhat" value="co" /> <span data-i18n="yes"></span></label>
           <label><input type="radio" name="nguoi-than-nhat" value="khong" /> <span data-i18n="no"></span></label>
@@ -159,17 +166,29 @@
         </div>
       </div>
 
-      <!-- ---- 3. Liên hệ quê nhà (chỉ hiện với diện Tokutei Gino) ---- -->
-      <div class="card hidden" id="card-tokutei">
+      <!-- ---- 3. Liên hệ quê nhà — luôn hiện khối này, nhân viên TỰ đánh dấu có
+           thuộc diện Tokutei Gino hay không bằng checkbox; chỉ khi đánh dấu mới
+           hiện 2 ô nhập số điện thoại + địa chỉ. Checkbox được TÍCH SẴN nếu dữ
+           liệu Kintone (loaiTuCach) đã ghi nhận là tokutei_gino, nhưng nhân viên
+           vẫn có thể tự sửa lại (xem enterMainForm() trong js/main.js). ---- -->
+      <div class="card" id="card-tokutei">
         <h2 data-i18n="q3.title"></h2>
-        <p class="muted" data-i18n="q3.sub"></p>
-        <div class="field">
-          <label data-i18n="q3.phone"></label>
-          <input type="tel" id="que-nha-sdt" />
-        </div>
-        <div class="field" style="margin-top:12px;">
-          <label data-i18n="q3.address"></label>
-          <input type="text" id="que-nha-diachi" />
+        <p class="muted card-sub" data-i18n="q3.sub"></p>
+
+        <label class="checkbox-row" for="tokutei-check">
+          <input type="checkbox" id="tokutei-check" />
+          <span data-i18n="q3.check"></span>
+        </label>
+
+        <div id="tokutei-fields" class="hidden" style="margin-top:14px;">
+          <div class="field">
+            <label data-i18n="q3.phone"></label>
+            <input type="tel" id="que-nha-sdt" />
+          </div>
+          <div class="field" style="margin-top:12px;">
+            <label data-i18n="q3.address"></label>
+            <input type="text" id="que-nha-diachi" />
+          </div>
         </div>
       </div>
 
@@ -256,7 +275,11 @@
     </div>
     <div class="field">
       <label data-i18n="fam.dob"></label>
-      <input type="date" class="f-dob" />
+      <div class="dob-group f-dob-group">
+        <select class="dob-day" aria-label="Day"></select>
+        <select class="dob-month" aria-label="Month"></select>
+        <select class="dob-year" aria-label="Year"></select>
+      </div>
     </div>
     <div class="field">
       <label data-i18n="fam.nationality"></label>

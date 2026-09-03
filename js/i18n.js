@@ -30,14 +30,14 @@ const I18N = {
 
     // ---- màn hình nhận diện ----
     "id.title": "ご本人の確認",
-    "id.sub": "このリンクは会社ごとの共通リンクです。まずご本人の確認をお願いします。",
+    "id.sub": "ご本人の確認をお願いします。",
     "id.name": "氏名（ローマ字・大文字）",
     "id.name.hint": "在留カードに印字されているローマ字を、そのまま大文字で入力してください。",
     "id.dob": "生年月日",
     "id.nat": "国籍",
     "id.continue": "確認して次へ",
     "id.checking": "確認中…",
-    "id.notfound": "該当する方が見つかりませんでした。氏名と生年月日をご確認いただくか、人事担当者にお問い合わせください。",
+    "id.notfound": "該当する方が見つかりませんでした。氏名と生年月日をご確認いただくか、担当者にお問い合わせください。",
     "id.err.title": "未入力の項目があります：",
     "id.err.name": "氏名",
     "id.err.dob": "生年月日",
@@ -61,7 +61,8 @@ const I18N = {
     "q2.add": "＋ 親族を追加",
 
     "q3.title": "3. 母国の連絡先",
-    "q3.sub": "特定技能の方のみご記入ください。",
+    "q3.sub": "特定技能の方のみご記入ください。該当する場合は下のチェックボックスを選択してください。",
+    "q3.check": "特定技能の対象です",
     "q3.phone": "母国の電話番号（ご家族の番号でも可。連絡が取れる番号）",
     "q3.address": "母国の住所",
 
@@ -76,7 +77,7 @@ const I18N = {
     "q4.ok": "✓ 写真は問題ありません。提出できます",
 
     "crop.title": "写真の位置を合わせる",
-    "crop.hint": "点線の輪郭に頭と肩が重なるよう、写真をドラッグ・拡大してください。枠は縦4cm×横3cm（3:4）に固定されています。",
+    "crop.hint": "点線の輪郭に頭と肩が重なるよう、写真をドラッグ・拡大してください。",
     "crop.checking": "写真を確認しています…",
     "crop.cancel": "キャンセル",
     "crop.confirm": "この写真を使う",
@@ -92,7 +93,7 @@ const I18N = {
     "err.fam.none": "2. 在日親族（「はい」を選んだ場合、親族を1名以上追加してください）",
 
     "success.title": "✅ 提出が完了しました",
-    "success.body": "ありがとうございました。写真・情報に修正が必要な場合は、人事担当者からご連絡します。",
+    "success.body": "ありがとうございました。写真・情報に修正が必要な場合は、担当者からご連絡します。",
 
     "yes": "はい",
     "no": "いいえ",
@@ -173,7 +174,8 @@ const I18N = {
     "q2.add": "+ Thêm người thân",
 
     "q3.title": "3. Thông tin liên hệ tại quê nhà",
-    "q3.sub": "Dành cho diện Kỹ năng đặc định (Tokutei Gino).",
+    "q3.sub": "Chỉ dành cho diện Kỹ năng đặc định (Tokutei Gino). Nếu bạn thuộc diện này, hãy đánh dấu vào ô bên dưới.",
+    "q3.check": "Tôi thuộc diện Kỹ năng đặc định (Tokutei Gino)",
     "q3.phone": "Số điện thoại tại quê nhà (có thể dùng số của người thân, miễn nghe gọi được)",
     "q3.address": "Địa chỉ tại quê nhà",
 
@@ -285,7 +287,8 @@ const I18N = {
     "q2.add": "+ Add a relative",
 
     "q3.title": "3. Contact details in your home country",
-    "q3.sub": "For Specified Skilled Worker (Tokutei Gino) status only.",
+    "q3.sub": "For Specified Skilled Worker (Tokutei Gino) status only. If this applies to you, check the box below.",
+    "q3.check": "I am on Specified Skilled Worker (Tokutei Gino) status",
     "q3.phone": "Phone number in your home country (a relative's number is fine, as long as it can be reached)",
     "q3.address": "Address in your home country",
 

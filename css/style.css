@@ -164,13 +164,26 @@ body {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 18px 16px;
   margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(28, 31, 38, 0.045);
 }
 
+/* ---- phân cấp chữ trong 1 card: title chính > title phụ > nhãn ô nhập > chú thích ----
+   (trước đây title phụ / nhãn / chú thích gần như cùng cỡ-màu, khó phân biệt) */
 .card h2 {
-  font-size: 1.05rem;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
   margin: 0 0 4px;
+}
+
+/* title phụ — câu mô tả ngắn ngay dưới h2 của mỗi card */
+.card-sub {
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .card-error, .card-success {
@@ -231,8 +244,11 @@ body {
   height: 16px;
 }
 
-.field { display: flex; flex-direction: column; gap: 4px; }
-.field label { font-size: 0.8rem; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 5px; }
+/* nhãn ô nhập — trước đây dùng màu muted giống hệt chú thích bên dưới, nhìn
+   không phân biệt được đâu là nhãn (bắt buộc đọc) đâu là chú thích (tham khảo
+   thêm). Nhãn giờ đậm + màu đậm (ink), chú thích (.field-hint) vẫn nhạt (muted). */
+.field label { font-size: 0.86rem; font-weight: 600; color: var(--ink); }
 .field input, .field select {
   padding: 9px 10px;
   border: 1px solid var(--line);
@@ -251,9 +267,9 @@ body {
 
 /* Chú thích ngay dưới ô nhập — dùng cho ô họ tên ở màn hình nhận diện */
 .field-hint {
-  margin: 2px 0 0;
-  font-size: 0.8rem;
-  line-height: 1.4;
+  margin: 1px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
   color: var(--muted);
 }
 
@@ -261,6 +277,66 @@ body {
 .input-upper {
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+/* ============================================================
+   BỘ CHỌN NGÀY SINH — 3 select (ngày / tháng / năm) thay cho
+   input type="date". Lý do + cách hoạt động: xem chú thích đầu
+   mục "0b" trong js/main.js.
+   Thứ tự hiển thị đổi theo ngôn ngữ đang chọn, dựa vào thuộc tính
+   lang trên <html> (setLang() trong js/main.js tự set thuộc tính
+   này) — không cần JS dựng lại DOM, chỉ đổi order bằng CSS nên
+   giá trị đã chọn không bị mất khi đổi ngôn ngữ.
+   ============================================================ */
+.dob-group {
+  display: flex;
+  gap: 8px;
+}
+.dob-group select {
+  flex: 1;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 6px;
+}
+
+/* mặc định = thứ tự tiếng Nhật (năm - tháng - ngày) phòng khi thuộc tính
+   lang chưa kịp set (rất hiếm, chỉ trong 1 nhịp đầu tải trang) */
+.dob-year { order: 1; }
+.dob-month { order: 2; }
+.dob-day { order: 3; }
+
+html[lang="vi"] .dob-day { order: 1; }
+html[lang="vi"] .dob-month { order: 2; }
+html[lang="vi"] .dob-year { order: 3; }
+
+html[lang="en"] .dob-month { order: 1; }
+html[lang="en"] .dob-day { order: 2; }
+html[lang="en"] .dob-year { order: 3; }
+
+html[lang="ja"] .dob-year { order: 1; }
+html[lang="ja"] .dob-month { order: 2; }
+html[lang="ja"] .dob-day { order: 3; }
+
+/* ---- checkbox tự khai diện Tokutei Gino (câu 3) ---- */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: #f4f7fc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.checkbox-row input[type="checkbox"] {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--primary);
 }
 
 /* ---- đánh dấu mục còn thiếu sau khi bấm nộp ---- */
