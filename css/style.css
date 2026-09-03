@@ -33,23 +33,32 @@ body {
 
 .screen { padding-top: 8px; }
 
-/* ---- thanh thương hiệu + chọn ngôn ngữ ---- */
+/* ============================================================
+   THANH THƯƠNG HIỆU + CHỌN NGÔN NGỮ
+   Bố cục 2 hàng xếp dọc:
+     hàng 1 — cụm nút ngôn ngữ, căn phải
+     hàng 2 — logo + tên + câu mô tả
+   Tách hẳn 2 hàng nên câu mô tả dài mấy dòng cũng không đẩy được nút ngôn ngữ
+   rớt hàng (lỗi cũ khi chuyển sang tiếng Anh).
+   ============================================================ */
 .brandbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
-  padding: 4px 0 14px;
+  padding: 2px 0 14px;
   border-bottom: 1px solid var(--line);
   margin-bottom: 16px;
 }
 
+.lang-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .brand {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  min-width: 0;
 }
 
 .brand-mark {
@@ -65,20 +74,18 @@ body {
   font-weight: 600;
 }
 
-.brand-text { display: flex; flex-direction: column; min-width: 0; }
+.brand-text { display: flex; flex-direction: column; }
 .brand-text strong { font-size: 1.05rem; letter-spacing: 0.01em; }
+
+/* Câu mô tả hiển thị ĐẦY ĐỦ, tự xuống dòng khi cần (đặc biệt bản tiếng Anh),
+   để nhân viên đọc được mình đang làm gì. */
 .brand-text em {
   font-style: normal;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--muted);
-  line-height: 1.35;
-  /* Câu mô tả (app.tagline) dài ngắn khác nhau tuỳ ngôn ngữ — bản tiếng Anh dài
-     nhất nên dễ bị xuống dòng và đẩy nút chọn ngôn ngữ (lang-switch) rớt xuống
-     dòng dưới, làm header cao thấp không đều giữa 3 ngôn ngữ. Ép 1 dòng + rút
-     gọn bằng "…" khi không đủ chỗ để header luôn cao bằng nhau. */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .lang-switch {
@@ -105,14 +112,50 @@ body {
   font-weight: 600;
 }
 
+/* ---- khối thông tin công ty / nhân viên ---- */
 .who {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 12px 14px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   font-size: 0.95rem;
 }
+
+/* Khối xác nhận sau khi nhận diện xong: họ tên / ngày sinh / công ty */
+.who-confirmed {
+  border-left: 3px solid var(--primary);
+}
+.who-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 3px 0;
+}
+.who-label {
+  flex: none;
+  width: 96px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.who-meta {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.link-btn {
+  border: none;
+  background: none;
+  padding: 4px 0 0;
+  margin: 0;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.required-note { margin: 0 0 16px; }
 
 .muted { color: var(--muted); }
 .small { font-size: 0.85rem; }
@@ -145,16 +188,29 @@ body {
 }
 .checklist li { margin-bottom: 4px; }
 
+/* ---- dòng người thân ---- */
 .family-row {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 14px;
-  padding-right: 34px;
   margin-bottom: 10px;
-  position: relative;
+  background: #fbfcfd;
+}
+
+.family-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: -2px;
+}
+.family-row-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .radio-group {
@@ -178,22 +234,71 @@ body {
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field label { font-size: 0.8rem; color: var(--muted); }
 .field input, .field select {
-  padding: 8px 10px;
+  padding: 9px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   font-size: 0.95rem;
+  background: var(--card);
+  color: var(--ink);
+  font-family: inherit;
+}
+.field input:focus, .field select:focus {
+  outline: 2px solid rgba(47, 111, 237, 0.35);
+  outline-offset: 1px;
+  border-color: var(--primary);
+}
+.field .radio-group { margin-top: 2px; }
+
+/* Chú thích ngay dưới ô nhập — dùng cho ô họ tên ở màn hình nhận diện */
+.field-hint {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* Ô nhập họ tên: giãn chữ nhẹ cho dễ đọc dạng IN HOA */
+.input-upper {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ---- đánh dấu mục còn thiếu sau khi bấm nộp ---- */
+.field.is-invalid label { color: var(--error); }
+.field.is-invalid input,
+.field.is-invalid select {
+  border-color: var(--error);
+  background: var(--error-bg);
+}
+.radio-group.is-invalid {
+  border: 1px solid var(--error);
+  background: var(--error-bg);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+#photo-picker.is-invalid {
+  border: 1px solid var(--error);
+  background: var(--error-bg);
+  border-radius: 10px;
+  padding: 10px;
+  display: inline-block;
+}
+#btn-add-family.is-invalid {
+  border: 1px solid var(--error);
+  color: var(--error);
 }
 
 .btn-remove-family {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   border: none;
   background: transparent;
   color: var(--muted);
   font-size: 1rem;
+  line-height: 1;
+  padding: 4px 6px;
   cursor: pointer;
+  border-radius: 6px;
 }
+.btn-remove-family:hover { background: #eef0f3; color: var(--ink); }
 
 .btn {
   display: inline-block;
@@ -201,6 +306,7 @@ body {
   border-radius: 10px;
   padding: 10px 16px;
   font-size: 0.95rem;
+  font-family: inherit;
   cursor: pointer;
   text-align: center;
 }
@@ -208,7 +314,7 @@ body {
 .btn-primary:disabled { background: #b9c6e6; cursor: not-allowed; }
 .btn-secondary { background: #eef0f3; color: var(--ink); }
 
-.btn-submit { width: 100%; margin-top: 8px; padding: 13px; font-size: 1rem; }
+.btn-submit { width: 100%; margin-top: 8px; padding: 14px; font-size: 1rem; font-weight: 600; }
 
 #photo-result img {
   width: 180px;
@@ -220,45 +326,130 @@ body {
   margin-bottom: 10px;
 }
 
-.status { font-size: 0.9rem; margin-bottom: 10px; }
-.status.ok { color: var(--success); }
-.status.bad { color: var(--error); }
+.status { font-size: 0.9rem; }
+.status:empty { display: none; }
+.status.ok { color: var(--success); margin-bottom: 10px; }
+.status.bad { color: var(--error); margin-bottom: 10px; }
 
+/* ---- hộp liệt kê các mục còn thiếu / báo không tìm thấy ---- */
 .error-box {
   background: var(--error-bg);
   color: var(--error);
+  border: 1px solid rgba(209, 69, 59, 0.25);
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 12px 14px;
   margin-bottom: 12px;
   font-size: 0.9rem;
+  line-height: 1.5;
+}
+.error-box strong { display: block; margin-bottom: 6px; }
+.error-box ul { margin: 0; padding-left: 18px; }
+.error-box li { margin-bottom: 4px; }
+.error-box .err-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-/* ---- crop modal ---- */
+/* ============================================================
+   MODAL CROP ẢNH
+   ============================================================ */
 .modal {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(17, 20, 26, 0.6);
   display: flex; align-items: center; justify-content: center;
   padding: 16px;
   z-index: 50;
+  overflow: auto;
 }
 .modal-inner {
   background: var(--card);
-  border-radius: var(--radius);
+  border-radius: 16px;
   padding: 16px;
   width: 100%;
   max-width: 420px;
+  box-shadow: 0 18px 40px rgba(17, 20, 26, 0.28);
 }
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.modal-head h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.modal-close {
+  border: none;
+  background: #eef0f3;
+  color: var(--muted);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+}
+.modal-close:hover { color: var(--ink); }
+
 .crop-area {
   width: 100%;
-  height: 320px;
-  background: #111;
-  border-radius: 8px;
+  height: min(56vh, 380px);
+  background: #14171c;
+  border-radius: 10px;
   overflow: hidden;
+  /* Chặn trình duyệt tự xử lý cử chỉ pinch-zoom TRONG vùng này. Không có dòng
+     này thì trên điện thoại (nhất là iOS Safari) 2 ngón tay sẽ phóng to cả
+     trang, làm khung crop "nhìn như" đổi cỡ dù kích thước thật không đổi. */
+  touch-action: none;
 }
 .crop-area img { display: block; max-width: 100%; }
+
+/* Khung crop: viền trắng mảnh, bỏ lưới kẻ 3x3 mặc định cho gọn — việc canh mặt
+   đã có viền gợi ý đầu + vai bên dưới đảm nhiệm. */
+.crop-area .cropper-view-box {
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  outline-offset: -1px;
+}
+.crop-area .cropper-dashed { display: none; }
+.crop-area .cropper-center { display: none; }
+
+/* Lớp viền gợi ý đầu + vai (SVG do js/main.js chèn vào trong .cropper-crop-box
+   nên tự bám đúng vị trí/kích thước khung). Chỉ để nhìn bằng mắt, không đo đạc,
+   không chặn nộp — việc chặn do lớp gác cổng face-api.js làm. */
+.crop-guide-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.crop-guide { display: block; width: 100%; height: 100%; }
+
+.crop-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 12px 0 8px;
+}
+
 .modal-actions {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
-.modal-actions .btn { flex: 1; }
+.modal-actions .btn { flex: 1; padding: 12px 14px; }
+
+@media (max-width: 380px) {
+  .lang-switch button { padding: 7px 9px; font-size: 0.76rem; }
+  .who-label { width: 80px; }
+}

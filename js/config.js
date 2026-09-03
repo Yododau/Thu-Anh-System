@@ -9,49 +9,103 @@ const SUPABASE_CONFIG = {
 };
 
 // ============================================================
-// DANH SÁCH TOKEN DEMO — dùng để test/thuyết trình, KHÔNG nối Kintone thật.
-// Khi lên bản thật, danh sách này sẽ do app C# sinh ra (mỗi NV 1 token,
-// theo đúng đợt thu ảnh + hạn nộp), không hard-code trong file này nữa.
+// TOKEN DEMO — 1 TOKEN = 1 CÔNG TY + 1 ĐỢT (phương án B″, mục 11b của SPEC)
+// Không còn 1 token/nhân viên như bản trước. HR gửi 1 link duy nhất vào group
+// Messenger của công ty; nhân viên tự nhận diện ở màn hình đầu tiên.
+//
+// Khi lên bản thật, danh sách này do app C# sinh từ Kintone, không hard-code.
 // ============================================================
-// "loaiTuCach": tư cách lưu trú của nhân viên — do app C# đọc từ Kintone và gán
-// sẵn khi sinh token (nhân viên không tự chọn). Giá trị "tokutei_gino" sẽ làm
-// web hiện thêm 2 câu hỏi "liên hệ quê nhà". Các loại khác (vd "ky_nang",
-// "ky_su"...) thì không hiện. Bỏ trống/khác "tokutei_gino" đều coi là không hiện.
 const DEMO_TOKENS = {
-  "DEMO-A001": {
-    hoTen: "Nguyễn Văn A",
-    congTy: "Công ty ABC",
-    nhomG: "G101",
+  "DEMO-YUTECH": {
+    nhomG: "180", // 入国G — là số thuần trên Kintone, không phải dạng "G101"
+    congTy: "株式会社ユーテック",
     dotThu: "2026/09",
-    hanNop: "2026-09-30", // YYYY-MM-DD, 23:59 giờ Nhật
-    loaiTuCach: "ky_nang",
+    hanNop: "2026-10-31", // đọc từ cột 回収期限(写真・納税証明書) của Kintone
   },
-  "DEMO-B002": {
-    hoTen: "Trần Thị B",
-    congTy: "Công ty XYZ",
-    nhomG: "G102",
+  "DEMO-SANSEI": {
+    nhomG: "186",
+    congTy: "株式会社サンセイテック",
     dotThu: "2026/09",
-    hanNop: "2026-09-30",
-    loaiTuCach: "ky_nang",
-  },
-  "DEMO-TOKUTEI": {
-    // token này để demo 2 câu hỏi thêm dành riêng cho diện Tokutei Gino
-    hoTen: "Phạm Văn D (demo Tokutei Gino)",
-    congTy: "Công ty ABC",
-    nhomG: "G101",
-    dotThu: "2026/09",
-    hanNop: "2026-09-30",
-    loaiTuCach: "tokutei_gino",
+    hanNop: "2026-10-31",
   },
   "DEMO-HETHAN": {
     // token này để demo màn hình "đã hết hạn"
-    hoTen: "Lê Văn C (demo hết hạn)",
-    congTy: "Công ty DEF",
-    nhomG: "G102",
+    nhomG: "2610",
+    congTy: "昭和精工株式会社",
     dotThu: "2026/08",
     hanNop: "2026-08-31",
-    loaiTuCach: "ky_nang",
   },
+};
+
+// ============================================================
+// ROSTER DEMO — danh sách nhân viên của từng token
+//
+// ⚠️ CẢNH BÁO QUAN TRỌNG — CHỈ DÙNG ĐỂ DEMO:
+// Ở bản thật, danh sách này TUYỆT ĐỐI KHÔNG được nằm trong file JS của trang
+// web. Repo GitHub là Public, và kể cả không public thì trình duyệt của bất kỳ
+// ai có link cũng tải được nguyên file này về đọc — lộ toàn bộ họ tên + ngày
+// sinh của cả công ty. Đây đúng là lỗi mà SPEC mục 11b đã cảnh báo.
+//
+// Bản thật phải:
+//   1. App C# đẩy roster lên bảng `roster` trên Supabase khi tạo đợt.
+//   2. Web gọi hàm RPC verify_employee(token, ten_chuan, ngay_sinh) —
+//      hàm security definer, SO KHỚP BÊN TRONG SERVER, chỉ trả về mã nhân
+//      viên khớp hoặc "không tìm thấy". Không bao giờ trả danh sách về trình duyệt.
+//   3. Xoá roster khi đóng đợt.
+//
+// Tên dưới đây là TÊN BỊA, cố ý không dùng tên thật của nhân viên nào, vì repo
+// này là Public.
+// ============================================================
+const DEMO_ROSTER = {
+  "DEMO-YUTECH": [
+    {
+      maNv: "DEMO-0001",
+      ten: "NGUYEN VAN A", // đúng như trường 名前 của Kintone = dòng romaji trên thẻ ngoại kiều
+      ngaySinh: "1998-04-12",
+      quocTich: "vietnam",
+      loaiTuCach: "ky_nang",
+    },
+    {
+      maNv: "DEMO-0002",
+      ten: "TRAN THI B",
+      ngaySinh: "1996-11-03",
+      quocTich: "vietnam",
+      loaiTuCach: "tokutei_gino", // token này sẽ hiện thêm 2 câu hỏi quê nhà
+    },
+    {
+      maNv: "DEMO-0003",
+      ten: "DELA CRUZ JUAN",
+      ngaySinh: "1995-07-21",
+      quocTich: "philippines",
+      loaiTuCach: "ky_nang",
+    },
+    {
+      // cùng ngày sinh với DEMO-0003 — để thử quy tắc "trùng ngày sinh thì tắt
+      // phần tha lỗi gõ sai" (SPEC mục 11b)
+      maNv: "DEMO-0004",
+      ten: "AUNG MYAT THU",
+      ngaySinh: "1995-07-21",
+      quocTich: "myanmar",
+      loaiTuCach: "ky_nang",
+    },
+  ],
+  "DEMO-SANSEI": [
+    {
+      maNv: "DEMO-0101",
+      ten: "BUDI SANTOSO",
+      ngaySinh: "1999-01-30",
+      quocTich: "indonesia",
+      loaiTuCach: "tokutei_gino",
+    },
+    {
+      maNv: "DEMO-0102",
+      ten: "LE VAN C",
+      ngaySinh: "1997-09-08",
+      quocTich: "vietnam",
+      loaiTuCach: "ky_nang",
+    },
+  ],
+  "DEMO-HETHAN": [],
 };
 
 // ============================================================
@@ -72,4 +126,9 @@ const RELATION_VALUES = [
   "me", // 母
 ];
 
+// Quốc tịch của NGƯỜI THÂN (mục 6c của SPEC — đã chốt 4 nước)
 const NATIONALITY_VALUES = ["indonesia", "vietnam", "myanmar", "philippines"];
+
+// Quốc tịch của CHÍNH NHÂN VIÊN ở màn hình nhận diện — có thêm "khac" để sau
+// này tuyển nhân viên nước khác thì không phải sửa code.
+const NATIONALITY_SELF_VALUES = ["vietnam", "philippines", "indonesia", "myanmar", "khac"];

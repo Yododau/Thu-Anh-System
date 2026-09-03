@@ -28,6 +28,29 @@ const I18N = {
     "info.round": "提出回",
     "info.deadline": "提出期限",
 
+    // ---- màn hình nhận diện ----
+    "id.title": "ご本人の確認",
+    "id.sub": "このリンクは会社ごとの共通リンクです。まずご本人の確認をお願いします。",
+    "id.name": "氏名（ローマ字・大文字）",
+    "id.name.hint": "在留カードに印字されているローマ字を、そのまま大文字で入力してください。",
+    "id.dob": "生年月日",
+    "id.nat": "国籍",
+    "id.continue": "確認して次へ",
+    "id.checking": "確認中…",
+    "id.notfound": "該当する方が見つかりませんでした。氏名と生年月日をご確認いただくか、人事担当者にお問い合わせください。",
+    "id.err.title": "未入力の項目があります：",
+    "id.err.name": "氏名",
+    "id.err.dob": "生年月日",
+    "id.err.nat": "国籍",
+
+    // ---- khối xác nhận ở đầu form ----
+    "who.name": "氏名",
+    "who.dob": "生年月日",
+    "who.company": "企業名",
+    "who.notme": "別の人として入力し直す",
+
+    "required.note": "すべての項目が必須です（在日親族の詳細は「はい」を選んだ場合のみ）。",
+
     "q1.title": "1. 婚姻状況",
     "q1.sub": "現在、結婚されていますか？",
     "q1.yes": "はい（既婚）",
@@ -52,7 +75,8 @@ const I18N = {
     "q4.retake": "別の写真を選び直す",
     "q4.ok": "✓ 写真は問題ありません。提出できます",
 
-    "crop.hint": "枠（3:4／縦4cm×横3cm）に顔が収まるよう、ドラッグ・拡大してください。",
+    "crop.title": "写真の位置を合わせる",
+    "crop.hint": "点線の輪郭に頭と肩が重なるよう、写真をドラッグ・拡大してください。枠は縦4cm×横3cm（3:4）に固定されています。",
     "crop.checking": "写真を確認しています…",
     "crop.cancel": "キャンセル",
     "crop.confirm": "この写真を使う",
@@ -63,6 +87,10 @@ const I18N = {
     "submitting": "送信中…",
     "submit.error": "送信中にエラーが発生しました（通信状況、または js/config.js の Supabase 設定をご確認ください）。詳細：",
 
+    "err.title": "未入力の項目があります。以下をご確認ください：",
+    "err.photo": "4. 顔写真（写真が選ばれていません）",
+    "err.fam.none": "2. 在日親族（「はい」を選んだ場合、親族を1名以上追加してください）",
+
     "success.title": "✅ 提出が完了しました",
     "success.body": "ありがとうございました。写真・情報に修正が必要な場合は、人事担当者からご連絡します。",
 
@@ -70,6 +98,7 @@ const I18N = {
     "no": "いいえ",
     "select": "-- 選択 --",
 
+    "fam.no": "親族 {n}人目",
     "fam.remove": "削除",
     "fam.relation": "1. あなたとの続柄",
     "fam.name": "2. 氏名（フルネーム）",
@@ -92,6 +121,7 @@ const I18N = {
     "nat.vietnam": "ベトナム",
     "nat.myanmar": "ミャンマー",
     "nat.philippines": "フィリピン",
+    "nat.khac": "その他",
   },
 
   // ------------------------------------------------------------
@@ -109,6 +139,29 @@ const I18N = {
 
     "info.round": "Đợt",
     "info.deadline": "Hạn nộp",
+
+    // ---- màn hình nhận diện ----
+    "id.title": "Xác nhận đúng người",
+    "id.sub": "Đây là link dùng chung cho cả công ty. Vui lòng xác nhận thông tin của anh/chị trước.",
+    "id.name": "Họ và tên (IN HOA, không dấu)",
+    "id.name.hint": "Chép đúng dòng chữ Latinh in trên thẻ ngoại kiều của anh/chị, viết IN HOA, không dấu.",
+    "id.dob": "Ngày tháng năm sinh",
+    "id.nat": "Quốc tịch",
+    "id.continue": "Xác nhận và tiếp tục",
+    "id.checking": "Đang kiểm tra…",
+    "id.notfound": "Không tìm thấy. Vui lòng kiểm tra lại họ tên và ngày sinh, hoặc liên hệ bộ phận nhân sự.",
+    "id.err.title": "Còn thiếu thông tin ở các mục sau:",
+    "id.err.name": "Họ và tên",
+    "id.err.dob": "Ngày tháng năm sinh",
+    "id.err.nat": "Quốc tịch",
+
+    // ---- khối xác nhận ở đầu form ----
+    "who.name": "Họ tên",
+    "who.dob": "Ngày sinh",
+    "who.company": "Công ty",
+    "who.notme": "Không phải tôi — nhập lại",
+
+    "required.note": "Tất cả các mục đều bắt buộc (phần chi tiết người thân chỉ cần khai nếu chọn “Có”).",
 
     "q1.title": "1. Tình trạng hôn nhân",
     "q1.sub": "Anh/chị hiện đã kết hôn chưa?",
@@ -134,7 +187,8 @@ const I18N = {
     "q4.retake": "Chọn lại ảnh khác",
     "q4.ok": "✓ Ảnh hợp lệ, đã sẵn sàng để nộp",
 
-    "crop.hint": "Kéo / phóng để mặt nằm gọn trong khung (tỉ lệ 3:4 theo quy cách ảnh visa 4cm×3cm).",
+    "crop.title": "Căn chỉnh ảnh",
+    "crop.hint": "Kéo và phóng ảnh sao cho đầu và vai trùng với viền nét đứt. Khung cố định tỉ lệ 3:4 theo quy cách ảnh visa 4cm × 3cm.",
     "crop.checking": "Đang kiểm tra ảnh…",
     "crop.cancel": "Huỷ",
     "crop.confirm": "Dùng ảnh này",
@@ -145,6 +199,10 @@ const I18N = {
     "submitting": "Đang nộp…",
     "submit.error": "Có lỗi khi nộp (kiểm tra lại kết nối mạng, hoặc cấu hình Supabase trong js/config.js). Chi tiết: ",
 
+    "err.title": "Còn thiếu thông tin ở các mục sau:",
+    "err.photo": "4. Ảnh chân dung (chưa chọn ảnh)",
+    "err.fam.none": "2. Người thân tại Nhật (đã chọn “Có” nhưng chưa khai người nào)",
+
     "success.title": "✅ Đã nộp thành công",
     "success.body": "Cảm ơn anh/chị. Bộ phận nhân sự sẽ kiểm tra và liên hệ lại nếu ảnh/thông tin cần chỉnh sửa.",
 
@@ -152,6 +210,7 @@ const I18N = {
     "no": "Không",
     "select": "-- Chọn --",
 
+    "fam.no": "Người thân {n}",
     "fam.remove": "Xoá",
     "fam.relation": "1. Mối quan hệ với anh/chị",
     "fam.name": "2. Họ tên đầy đủ",
@@ -174,6 +233,7 @@ const I18N = {
     "nat.vietnam": "Việt Nam",
     "nat.myanmar": "Myanmar",
     "nat.philippines": "Philippines",
+    "nat.khac": "Khác",
   },
 
   // ------------------------------------------------------------
@@ -191,6 +251,29 @@ const I18N = {
 
     "info.round": "Round",
     "info.deadline": "Deadline",
+
+    // ---- màn hình nhận diện ----
+    "id.title": "Confirm who you are",
+    "id.sub": "This link is shared across your whole company. Please confirm your details first.",
+    "id.name": "Full name (CAPITAL LETTERS)",
+    "id.name.hint": "Copy exactly the romaji line printed on your residence card, in capital letters.",
+    "id.dob": "Date of birth",
+    "id.nat": "Nationality",
+    "id.continue": "Confirm and continue",
+    "id.checking": "Checking…",
+    "id.notfound": "No match found. Please check your name and date of birth, or contact HR.",
+    "id.err.title": "Some answers are still missing:",
+    "id.err.name": "Full name",
+    "id.err.dob": "Date of birth",
+    "id.err.nat": "Nationality",
+
+    // ---- khối xác nhận ở đầu form ----
+    "who.name": "Name",
+    "who.dob": "Date of birth",
+    "who.company": "Company",
+    "who.notme": "Not me — start over",
+
+    "required.note": "Every question is required (relative details only if you answer “Yes”).",
 
     "q1.title": "1. Marital status",
     "q1.sub": "Are you currently married?",
@@ -216,7 +299,8 @@ const I18N = {
     "q4.retake": "Choose a different photo",
     "q4.ok": "✓ Photo accepted and ready to submit",
 
-    "crop.hint": "Drag and zoom so your face fits inside the frame (3:4 ratio, per the 4cm × 3cm visa photo standard).",
+    "crop.title": "Position your photo",
+    "crop.hint": "Drag and zoom the photo so your head and shoulders line up with the dotted outline. The frame is fixed at 3:4, matching the 4cm × 3cm visa photo standard.",
     "crop.checking": "Checking the photo…",
     "crop.cancel": "Cancel",
     "crop.confirm": "Use this photo",
@@ -227,6 +311,10 @@ const I18N = {
     "submitting": "Submitting…",
     "submit.error": "Submission failed (check your internet connection, or the Supabase settings in js/config.js). Details: ",
 
+    "err.title": "Some answers are still missing:",
+    "err.photo": "4. Portrait photo (no photo selected)",
+    "err.fam.none": "2. Relatives in Japan (you answered “Yes” but added no one)",
+
     "success.title": "✅ Submitted successfully",
     "success.body": "Thank you. HR will review your submission and contact you if anything needs to be corrected.",
 
@@ -234,6 +322,7 @@ const I18N = {
     "no": "No",
     "select": "-- Select --",
 
+    "fam.no": "Relative {n}",
     "fam.remove": "Remove",
     "fam.relation": "1. Relationship to you",
     "fam.name": "2. Full name",
@@ -256,6 +345,7 @@ const I18N = {
     "nat.vietnam": "Vietnam",
     "nat.myanmar": "Myanmar",
     "nat.philippines": "Philippines",
+    "nat.khac": "Other",
   },
 };
 
@@ -300,6 +390,7 @@ function t(key, vars) {
 
 /** Định dạng ngày theo ngôn ngữ đang chọn */
 function formatDate(iso) {
+  if (!iso) return "";
   const [y, m, d] = iso.split("-");
   if (currentLang === "ja") return `${Number(y)}年${Number(m)}月${Number(d)}日`;
   if (currentLang === "en") {

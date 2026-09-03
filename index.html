@@ -2,7 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<!-- Bỏ maximum-scale=1: iOS Safari vốn bỏ qua thuộc tính này (từ iOS 10, vì lý do
+     accessibility) nên nó không giúp gì, mà lại chặn phóng to trên Android.
+     Việc chặn pinch-zoom chỉ cần thiết TRONG khung crop, đã xử lý bằng
+     touch-action: none trên .crop-area (css/style.css). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Zairyu Desk</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
@@ -12,8 +16,19 @@
 
 <div class="wrap">
 
-  <!-- ============ THANH THƯƠNG HIỆU + CHỌN NGÔN NGỮ ============ -->
-  <div class="brandbar">
+  <!-- ============ THANH THƯƠNG HIỆU + CHỌN NGÔN NGỮ ============
+       Nút chọn ngôn ngữ nằm RIÊNG một hàng ở góc trên bên phải, tách hẳn khỏi
+       tên + câu mô tả. Nhờ vậy câu mô tả (app.tagline) dài bao nhiêu, xuống bao
+       nhiêu dòng cũng không thể đẩy cụm nút ngôn ngữ rớt hàng như trước. -->
+  <header class="brandbar">
+    <div class="lang-row">
+      <div id="lang-switch" class="lang-switch">
+        <button type="button" data-lang="ja">日本語</button>
+        <button type="button" data-lang="vi">Tiếng Việt</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
+    </div>
+
     <div class="brand">
       <span class="brand-mark">在</span>
       <span class="brand-text">
@@ -21,12 +36,7 @@
         <em data-i18n="app.tagline"></em>
       </span>
     </div>
-    <div id="lang-switch" class="lang-switch">
-      <button type="button" data-lang="ja">日本語</button>
-      <button type="button" data-lang="vi">Tiếng Việt</button>
-      <button type="button" data-lang="en">English</button>
-    </div>
-  </div>
+  </header>
 
   <!-- ============ MÀN HÌNH: ĐANG TẢI ============ -->
   <section id="screen-loading" class="screen">
@@ -50,18 +60,79 @@
     </div>
   </section>
 
-  <!-- ============ MÀN HÌNH: FORM CHÍNH ============ -->
-  <section id="screen-form" class="screen hidden">
+  <!-- ============ MÀN HÌNH: NHẬN DIỆN NHÂN VIÊN (bước 0) ============
+       1 link dùng chung cho cả công ty, nên phải xác nhận đúng người trước khi
+       cho nộp. 3 mục: họ tên (romaji, in hoa) + ngày sinh + quốc tịch. -->
+  <section id="screen-identify" class="screen hidden">
 
     <div class="who">
-      <div><strong id="info-hoten"></strong> — <span id="info-congty"></span> (<span id="info-nhomg"></span>)</div>
+      <div><strong id="id-congty"></strong> <span class="muted" id="id-nhomg"></span></div>
       <div class="muted small">
-        <span data-i18n="info.round"></span>: <span id="info-dot"></span> ·
-        <span data-i18n="info.deadline"></span>: <span id="info-han"></span>
+        <span data-i18n="info.round"></span>: <span id="id-dot"></span> ·
+        <span data-i18n="info.deadline"></span>: <span id="id-han"></span>
       </div>
     </div>
 
-    <form id="main-form">
+    <form id="identify-form" novalidate>
+      <div class="card">
+        <h2 data-i18n="id.title"></h2>
+        <p class="muted" data-i18n="id.sub"></p>
+
+        <div class="field" style="margin-top:14px;">
+          <label data-i18n="id.name"></label>
+          <input type="text" id="id-name" class="input-upper" autocomplete="off"
+                 spellcheck="false" autocapitalize="characters" autocorrect="off" />
+          <!-- Chú thích BẮT BUỘC nằm ngay tại dòng nhập (SPEC mục 11d): dữ liệu
+               Kintone giống 100% dòng romaji in trên thẻ ngoại kiều, nên nhân
+               viên chỉ cần chép lại, không gõ theo trí nhớ. -->
+          <p class="field-hint" data-i18n="id.name.hint"></p>
+        </div>
+
+        <div class="field" style="margin-top:14px;">
+          <label data-i18n="id.dob"></label>
+          <input type="date" id="id-dob" />
+        </div>
+
+        <div class="field" style="margin-top:14px;">
+          <label data-i18n="id.nat"></label>
+          <select id="id-nat"></select>
+        </div>
+      </div>
+
+      <div id="identify-error" class="error-box hidden"></div>
+
+      <button type="submit" id="btn-identify" class="btn btn-primary btn-submit" data-i18n="id.continue"></button>
+    </form>
+  </section>
+
+  <!-- ============ MÀN HÌNH: FORM CHÍNH ============ -->
+  <section id="screen-form" class="screen hidden">
+
+    <!-- Khối xác nhận: hiện lại đúng thông tin đã nhận diện, để nhân viên yên
+         tâm là mình đang nộp cho đúng hồ sơ của mình. -->
+    <div class="who who-confirmed">
+      <div class="who-row">
+        <span class="who-label" data-i18n="who.name"></span>
+        <strong id="info-hoten"></strong>
+      </div>
+      <div class="who-row">
+        <span class="who-label" data-i18n="who.dob"></span>
+        <span id="info-ngaysinh"></span>
+      </div>
+      <div class="who-row">
+        <span class="who-label" data-i18n="who.company"></span>
+        <span><span id="info-congty"></span> <span class="muted" id="info-nhomg"></span></span>
+      </div>
+      <div class="muted small who-meta">
+        <span data-i18n="info.round"></span>: <span id="info-dot"></span> ·
+        <span data-i18n="info.deadline"></span>: <span id="info-han"></span>
+      </div>
+      <button type="button" id="btn-not-me" class="link-btn" data-i18n="who.notme"></button>
+    </div>
+
+    <p class="required-note muted small" data-i18n="required.note"></p>
+
+    <form id="main-form" novalidate>
 
       <!-- ---- 1. Tình trạng hôn nhân ---- -->
       <div class="card">
@@ -96,7 +167,7 @@
           <label data-i18n="q3.phone"></label>
           <input type="tel" id="que-nha-sdt" />
         </div>
-        <div class="field" style="margin-top:8px;">
+        <div class="field" style="margin-top:12px;">
           <label data-i18n="q3.address"></label>
           <input type="text" id="que-nha-diachi" />
         </div>
@@ -116,9 +187,8 @@
 
         <div id="photo-picker">
           <label class="btn btn-primary" for="photo-input" data-i18n="q4.choose"></label>
-          <!-- Bỏ thuộc tính capture="user": có capture, điện thoại sẽ ép mở thẳng
-               camera, không cho chọn ảnh có sẵn trong album. Bỏ đi thì trình duyệt
-               trên điện thoại sẽ hiện bảng cho chọn "Chụp ảnh" hoặc "Thư viện ảnh". -->
+          <!-- Không dùng capture="user": có capture thì điện thoại ép mở thẳng
+               camera, không cho chọn ảnh có sẵn trong album. -->
           <input type="file" id="photo-input" accept="image/*" hidden />
         </div>
 
@@ -131,7 +201,9 @@
 
       <div id="submit-error" class="error-box hidden"></div>
 
-      <button type="submit" id="btn-submit" class="btn btn-primary btn-submit" data-i18n="submit" disabled></button>
+      <!-- Nút nộp KHÔNG bị khoá sẵn: nhân viên bấm được bất cứ lúc nào, thiếu
+           chỗ nào thì hệ thống liệt kê ra ngay bên trên. -->
+      <button type="submit" id="btn-submit" class="btn btn-primary btn-submit" data-i18n="submit"></button>
     </form>
   </section>
 
@@ -148,11 +220,18 @@
 <!-- ============ MODAL CROP ============ -->
 <div id="crop-modal" class="modal hidden">
   <div class="modal-inner">
+    <div class="modal-head">
+      <h2 data-i18n="crop.title"></h2>
+      <button type="button" id="btn-crop-close" class="modal-close" aria-label="close">✕</button>
+    </div>
+
     <div class="crop-area">
       <img id="crop-image" alt="" />
     </div>
-    <p class="muted small" data-i18n="crop.hint"></p>
+
+    <p class="crop-hint" data-i18n="crop.hint"></p>
     <div id="crop-face-status" class="status"></div>
+
     <div class="modal-actions">
       <button type="button" id="btn-crop-cancel" class="btn btn-secondary" data-i18n="crop.cancel"></button>
       <button type="button" id="btn-crop-confirm" class="btn btn-primary" data-i18n="crop.confirm"></button>
@@ -162,23 +241,26 @@
 
 <template id="family-row-template">
   <div class="family-row">
-    <button type="button" class="btn-remove-family" data-i18n-title="fam.remove">✕</button>
+    <div class="family-row-head">
+      <span class="family-row-title"></span>
+      <button type="button" class="btn-remove-family" data-i18n-title="fam.remove">✕</button>
+    </div>
 
     <div class="field">
       <label data-i18n="fam.relation"></label>
-      <select class="f-relation" required></select>
+      <select class="f-relation"></select>
     </div>
     <div class="field">
       <label data-i18n="fam.name"></label>
-      <input type="text" class="f-name" required />
+      <input type="text" class="f-name" />
     </div>
     <div class="field">
       <label data-i18n="fam.dob"></label>
-      <input type="date" class="f-dob" required />
+      <input type="date" class="f-dob" />
     </div>
     <div class="field">
       <label data-i18n="fam.nationality"></label>
-      <select class="f-nationality" required></select>
+      <select class="f-nationality"></select>
     </div>
     <div class="field">
       <label data-i18n="fam.living"></label>
@@ -193,7 +275,7 @@
     </div>
     <div class="field">
       <label data-i18n="fam.zairyu"></label>
-      <input type="text" class="f-zairyu" required />
+      <input type="text" class="f-zairyu" />
     </div>
   </div>
 </template>
